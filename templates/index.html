@@ -1,1 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text Summarization App</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        textarea {
+            width: 100%;
+            height: 150px;
+            margin-bottom: 10px;
+        }
+        button {
+            padding: 10px 15px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        h2 {
+            margin-top: 20px;
+        }
+        #summaryOutput {
+            border: 1px solid #ccc;
+            padding: 10px;
+            background-color: #fff;
+        }
+    </style>
+    <script>
+        // Function to handle form submission
+        async function summarizeText(event) {
+            event.preventDefault();  // Prevent default form submission
+
+            // Get input text from the form
+            const inputText = document.getElementById('inputText').value;
+
+            // Check if the input is not empty
+            if (!inputText.trim()) {
+                alert('Please enter some text to summarize.');
+                return;
+            }
+
+            // Send input text to the backend using fetch API
+            const response = await fetch('http://127.0.0.1:8000/summarize/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ text: inputText })
+            });
+
+            // Handle the response
+            if (response.ok) {
+                const result = await response.json();
+                // Display the summarized text
+                document.getElementById('summaryOutput').innerText = result.summary;
+            } else {
+                // Handle any errors
+                alert('Error summarizing the text. Please try again.');
+            }
+        }
+    </script>
+</head>
+<body>
+    <h1>Text Summarization App</h1>
+
+    <!-- Input form to take text -->
+    <form id="summarizeForm" onsubmit="summarizeText(event)">
+        <textarea id="inputText" placeholder="Enter text to summarize..."></textarea><br>
+        <button type="submit">Summarize</button>
+    </form>
+
+    <!-- Area to display the summary, initially empty -->
+    <h2>Summary:</h2>
+    <p id="summaryOutput"></p>
+</body>
+</html>
+
+
+
 
